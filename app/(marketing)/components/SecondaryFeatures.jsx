@@ -196,12 +196,12 @@ export function SecondaryFeatures() {
       <Container>
         <div className="mx-auto max-w-2xl sm:text-center">
           <h2 className="text-3xl font-medium tracking-tight text-gray-900">
-            Now is the time to build your portfolio.
+            Now is the time to boost your learning.
           </h2>
           <p className="mt-2 text-lg text-gray-600">
-            With typical market returns, you have to start young to secure your
-            future. With ${process.env.NEXT_PUBLIC_APP_NAME}, it’s never too
-            late to build your nest egg.
+            With traditional methods, learning can be slow and tedious. With{' '}
+            {process.env.NEXT_PUBLIC_APP_NAME}, it&apos;s never too late to
+            transform your learning habits and achieve your goals.
           </p>
         </div>
         <ul

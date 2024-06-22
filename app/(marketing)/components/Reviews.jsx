@@ -264,12 +264,14 @@ export function Reviews() {
           id="reviews-title"
           className="text-3xl font-medium tracking-tight text-gray-900 sm:text-center"
         >
-          Everyone is changing their life with $
+          Everyone is transforming their learning with{' '}
           {process.env.NEXT_PUBLIC_APP_NAME}.
         </h2>
         <p className="mt-2 text-lg text-gray-600 sm:text-center">
-          Thousands of people have doubled their net-worth in the last 30 days.
+          Thousands of users are mastering new skills and improving memory
+          retention every day.
         </p>
+
         <ReviewGrid />
       </Container>
     </section>

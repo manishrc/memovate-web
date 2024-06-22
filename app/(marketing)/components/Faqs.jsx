@@ -1,4 +1,4 @@
-import { Container } from '@/components/Container';
+import { Container } from '@/app/(marketing)/components/Container';
 
 const faqs = [
   [
@@ -63,7 +63,7 @@ export function Faqs() {
           <p className="mt-2 text-lg text-gray-600">
             If you have anything else you want to ask,{' '}
             <a
-              href="mailto:info@example.com"
+              href="mailto:hello@memovate.com"
               className="text-gray-900 underline"
             >
               reach out to us

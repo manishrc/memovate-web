@@ -1,6 +1,6 @@
-import { AppStoreLink } from '@/app/(marketing)/AppStoreLink';
-import { CircleBackground } from '@/app/(marketing)/CircleBackground';
-import { Container } from '@/app/(marketing)/Container';
+import { AppStoreLink } from '@/app/(marketing)/components/AppStoreLink';
+import { CircleBackground } from '@/app/(marketing)/components/CircleBackground';
+import { Container } from '@/app/(marketing)/components/Container';
 
 export function CallToAction() {
   return (
@@ -14,13 +14,13 @@ export function CallToAction() {
       <Container className="relative">
         <div className="mx-auto max-w-md sm:text-center">
           <h2 className="text-3xl font-medium tracking-tight text-white sm:text-4xl">
-            Get your first tips today
+            Start enhancing your memory today.
           </h2>
           <p className="mt-4 text-lg text-gray-300">
-            It takes 30 seconds to sign up. Download the app and create an
-            account today and we’ll send you a tip guaranteed to double your
-            first investment.
+            Sign up in 30 seconds and start learning more efficiently and
+            enjoyably.
           </p>
+
           <div className="mt-8 flex justify-center">
             <AppStoreLink color="white" />
           </div>

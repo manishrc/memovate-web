@@ -19,7 +19,7 @@ import {
   StaticKitLogo,
   TransistorLogo,
   TupleLogo,
-} from '@/components/StockLogos';
+} from '@/app/(marketing)/components/StockLogos';
 
 const MotionAppScreenHeader = motion(AppScreen.Header);
 const MotionAppScreenBody = motion(AppScreen.Body);
@@ -36,14 +36,14 @@ const features = [
     description:
       'Receive push notifications to remind you of your daily 10-minute recall sessions and track your learning progress.',
     icon: DeviceNotificationIcon,
-    screen: NotificationScreen,
+    screen: StocksScreen,
   },
   {
     name: 'Learn at your own pace',
     description:
       'Personalized flashcards and quizzes that adapt to your learning speed and style for optimal retention.',
     icon: DeviceTouchIcon,
-    screen: LearnScreen,
+    screen: InvestScreen,
   },
 ];
 

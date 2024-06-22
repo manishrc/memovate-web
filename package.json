@@ -31,7 +31,7 @@
     "@radix-ui/react-slot": "^1.0.2",
     "@react-email/components": "^0.0.19",
     "@react-email/render": "^0.0.15",
-    "@sentry/nextjs": "^7.114.0",
+    "@sentry/nextjs": "^7.118.0",
     "@tailwindcss/typography": "^0.5.13",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
@@ -51,6 +51,7 @@
     "resend": "3.2.0",
     "server-only": "^0.0.1",
     "sonner": "^1.4.41",
+    "use-debounce": "^10.0.1",
     "zod": "^3.23.8"
   },
   "devDependencies": {

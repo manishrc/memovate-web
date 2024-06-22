@@ -4,39 +4,39 @@ import { Container } from '@/app/(marketing)/components/Container';
 
 const features = [
   {
-    name: 'Invest any amount',
+    name: 'Personalized Flashcards',
     description:
-      'Whether it’s $1 or $1,000,000, we can put your money to work for you.',
+      'AI-generated flashcards tailored to your learning needs and pace.',
     icon: DeviceArrowIcon,
   },
   {
-    name: 'Build a balanced portfolio',
+    name: 'Interactive Quizzes',
     description:
-      'Invest in different industries to find the most opportunities to win huge.',
+      'Engage in fun quizzes to reinforce your knowledge and track your progress.',
     icon: DeviceCardsIcon,
   },
   {
-    name: 'Trade in real-time',
+    name: 'Daily Recall Sessions',
     description:
-      'Get insider tips on big stock moves and act on them within seconds.',
+      'Boost your memory with 10-minute recall sessions that fit into your daily routine.',
     icon: DeviceClockIcon,
   },
   {
-    name: 'Profit from your network',
+    name: 'Habit Building Techniques',
     description:
-      'Invite new insiders to get tips faster and beat even other Pocket users.',
+      'Utilize science-based techniques to create effective and lasting learning habits.',
     icon: DeviceListIcon,
   },
   {
-    name: 'Encrypted and anonymized',
+    name: 'Gamified Challenges',
     description:
-      'Cutting-edge security technology that even the NSA doesn’t know about keeps you hidden.',
+      'Enjoy learning with gamified challenges and rewards that keep you motivated.',
     icon: DeviceLockIcon,
   },
   {
-    name: 'Portfolio tracking',
+    name: 'Progress Tracking',
     description:
-      'Watch your investments grow exponentially, leaving other investors in the dust.',
+      'Monitor your improvement over time and celebrate your learning milestones.',
     icon: DeviceChartIcon,
   },
 ];
@@ -200,7 +200,8 @@ export function SecondaryFeatures() {
           </h2>
           <p className="mt-2 text-lg text-gray-600">
             With typical market returns, you have to start young to secure your
-            future. With Pocket, it’s never too late to build your nest egg.
+            future. With ${process.env.NEXT_PUBLIC_APP_NAME}, it’s never too
+            late to build your nest egg.
           </p>
         </div>
         <ul

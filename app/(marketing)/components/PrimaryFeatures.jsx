@@ -26,25 +26,24 @@ const MotionAppScreenBody = motion(AppScreen.Body);
 
 const features = [
   {
-    name: 'Invite friends for better returns',
-    description:
-      'For every friend you invite to Pocket, you get insider notifications 5 seconds sooner. And it’s 10 seconds if you invite an insider.',
+    name: 'Invite friends for better learning',
+    description: `Invite your friends to ${process.env.NEXT_PUBLIC_APP_NAME} and collaborate on learning challenges for an enhanced experience.`,
     icon: DeviceUserIcon,
     screen: InviteScreen,
   },
   {
-    name: 'Notifications on stock dips',
+    name: 'Smart notifications',
     description:
-      'Get a push notification every time we find out something that’s going to lower the share price on your holdings so you can sell before the information hits the public markets.',
+      'Receive push notifications to remind you of your daily 10-minute recall sessions and track your learning progress.',
     icon: DeviceNotificationIcon,
-    screen: StocksScreen,
+    screen: NotificationScreen,
   },
   {
-    name: 'Invest what you want',
+    name: 'Learn at your own pace',
     description:
-      'We hide your stock purchases behind thousands of anonymous trading accounts, so suspicious activity can never be traced back to you.',
+      'Personalized flashcards and quizzes that adapt to your learning speed and style for optimal retention.',
     icon: DeviceTouchIcon,
-    screen: InvestScreen,
+    screen: LearnScreen,
   },
 ];
 
@@ -562,10 +561,10 @@ export function PrimaryFeatures() {
             Every feature you need to win. Try it for yourself.
           </h2>
           <p className="mt-2 text-lg text-gray-400">
-            Pocket was built for investors like you who play by their own rules
-            and aren’t going to let SEC regulations get in the way of their
-            dreams. If other investing tools are afraid to build it, Pocket has
-            it.
+            ${process.env.NEXT_PUBLIC_APP_NAME} was built for investors like you
+            who play by their own rules and aren’t going to let SEC regulations
+            get in the way of their dreams. If other investing tools are afraid
+            to build it, ${process.env.NEXT_PUBLIC_APP_NAME} has it.
           </p>
         </div>
       </Container>

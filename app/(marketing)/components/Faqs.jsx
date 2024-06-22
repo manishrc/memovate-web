@@ -1,58 +1,49 @@
-import { Container } from '@/components/Container'
+import { Container } from '@/components/Container';
 
 const faqs = [
   [
     {
-      question: 'How do I know the tips are good?',
-      answer:
-        'Our whole business depends on our tips being good, so it’s in our best interest that they are. The results of our customers speak for themselves, just trust us.',
+      question: 'How does it help with memory retention?',
+      answer: `${process.env.NEXT_PUBLIC_APP_NAME} uses AI to generate and sequence flashcards and employs science-based techniques to enhance memory retention.`,
     },
     {
-      question: 'Isn’t this insider trading?',
-      answer:
-        'Yes exactly. But at scale! Historically you could only make insider trades with knowledge from your direct network. Pocket brings you insider trading tips from people you don’t even know.',
+      question: 'How does the gamification work?',
+      answer: `${process.env.NEXT_PUBLIC_APP_NAME} makes learning fun by incorporating interactive challenges and rewards, similar to popular apps, but focused on educational content.`,
     },
     {
-      question: 'But isn’t insider trading illegal?',
-      answer:
-        'Here’s the thing: you’re the one doing the insider trading, not us. We’re just giving you the tips and some tools to make trades. We’re not doing anything wrong here.',
+      question: 'What are the 10-minute recall sessions?',
+      answer: `${process.env.NEXT_PUBLIC_APP_NAME} encourages daily 10-minute recall sessions to build a consistent learning habit and improve memory retention.`,
     },
   ],
   [
     {
-      question: 'Do the people giving you tips realize what they are doing?',
-      answer:
-        'Again I would argue this isn’t really our responsibility. People make their own choices. If they don’t research the consequences that’s on them, not on us.',
+      question: 'Is this app suitable for all ages?',
+      answer: `Yes, ${process.env.NEXT_PUBLIC_APP_NAME} is designed for learners of all ages, making it easy and enjoyable for anyone to improve their memory and learning speed.`,
     },
     {
-      question: 'Where is Pocket based?',
-      answer:
-        'Let’s just say it’s not somewhere where the SEC is going to find us.',
+      question: 'Can I track my progress?',
+      answer: `Absolutely! ${process.env.NEXT_PUBLIC_APP_NAME} allows you to monitor your learning progress and see how much you’ve improved over time.`,
     },
     {
-      question: 'Is there any age limit to trading on Pocket?',
-      answer:
-        'For our free plan, the age limit is based on the minimum age to trade in your country of residence. Our VIP plan uses advanced transaction anonymization though, so you can use that plan even if you’re 9 years old. Or a dog.',
+      question: 'Is there a community feature?',
+      answer: `${process.env.NEXT_PUBLIC_APP_NAME} offers community features where you can share your progress, compete in challenges, and learn from others.`,
     },
   ],
   [
     {
-      question: 'How did you get this on the App Store?',
-      answer:
-        'Honestly we were surprised too, but eventually we found out that the app reviewer found the app so compelling they approved it just so they could use it themselves.',
+      question: 'How does the AI generate flashcards?',
+      answer: `The AI in ${process.env.NEXT_PUBLIC_APP_NAME} analyzes educational content to create personalized flashcards that adapt to your learning pace and needs.`,
     },
     {
-      question: 'How do I explain the money I withdraw from Pocket to the IRS?',
-      answer:
-        'This feels like one-hundred percent a you problem. Pocket is not responsible in any way for your tax returns.',
+      question: 'Is the app based on research?',
+      answer: `Yes, ${process.env.NEXT_PUBLIC_APP_NAME} uses techniques backed by scientific research to enhance learning efficacy and habit formation.`,
     },
     {
-      question: 'How do I become an insider?',
-      answer:
-        'Contact us with some details about your industry and the type of access you have to apply for an insider account. Once approved, we’ll send you a guide on collecting insider information without being detected at work.',
+      question: 'What makes this app different from other learning apps?',
+      answer: `${process.env.NEXT_PUBLIC_APP_NAME} combines AI technology, gamification, and science-based techniques to create a unique and effective learning experience.`,
     },
   ],
-]
+];
 
 export function Faqs() {
   return (
@@ -101,5 +92,5 @@ export function Faqs() {
         </ul>
       </Container>
     </section>
-  )
+  );
 }

@@ -166,7 +166,10 @@ export function AppDemo() {
   return (
     <AppScreen>
       <AppScreen.Body>
-        <div className="p-4">
+        <div className="flex items-center p-4 justify-center ">
+          Coming soon...
+        </div>
+        <div className="p-4 hidden">
           <div className="flex gap-2">
             <div className="text-xs leading-6 text-gray-500">
               Tailwind Labs, Inc.

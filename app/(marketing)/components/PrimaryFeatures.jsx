@@ -26,22 +26,20 @@ const MotionAppScreenBody = motion(AppScreen.Body);
 
 const features = [
   {
-    name: 'Invite friends for better learning',
-    description: `Invite your friends to ${process.env.NEXT_PUBLIC_APP_NAME} and collaborate on learning challenges for an enhanced experience.`,
+    name: 'Swipe-to-Learn',
+    description: `Swipe left if you got it wrong, right if you get it right. ${process.env.NEXT_PUBLIC_APP_NAME} makes learning intuitive and interactive.`,
     icon: DeviceUserIcon,
-    screen: InviteScreen,
+    screen: InvestScreen,
   },
   {
-    name: 'Smart notifications',
-    description:
-      'Receive push notifications to remind you of your daily 10-minute recall sessions and track your learning progress.',
+    name: 'AI-Powered Flashcards',
+    description: `Dynamically curated flashcards keep you in the flow on a topic. Stay engaged and focused with ${process.env.NEXT_PUBLIC_APP_NAME}.`,
     icon: DeviceNotificationIcon,
     screen: StocksScreen,
   },
   {
-    name: 'Learn at your own pace',
-    description:
-      'Personalized flashcards and quizzes that adapt to your learning speed and style for optimal retention.',
+    name: 'Gamified Learning',
+    description: `Gamification helps you learn a little more every day. Spend just 10 minutes a day with ${process.env.NEXT_PUBLIC_APP_NAME} and see your progress soar.`,
     icon: DeviceTouchIcon,
     screen: InvestScreen,
   },
@@ -558,13 +556,13 @@ export function PrimaryFeatures() {
       <Container>
         <div className="mx-auto max-w-2xl lg:mx-0 lg:max-w-3xl">
           <h2 className="text-3xl font-medium tracking-tight text-white">
-            Every feature you need to win. Try it for yourself.
+            Every feature you need to succeed. Try it for yourself.
           </h2>
           <p className="mt-2 text-lg text-gray-400">
-            ${process.env.NEXT_PUBLIC_APP_NAME} was built for investors like you
-            who play by their own rules and aren’t going to let SEC regulations
-            get in the way of their dreams. If other investing tools are afraid
-            to build it, ${process.env.NEXT_PUBLIC_APP_NAME} has it.
+            {process.env.NEXT_PUBLIC_APP_NAME} was built for learners like you
+            who strive for excellence and are ready to embrace innovative and
+            effective studying techniques. If other learning tools can&apos;t
+            keep up, {process.env.NEXT_PUBLIC_APP_NAME} has everything you need.
           </p>
         </div>
       </Container>

@@ -207,11 +207,11 @@ export function Pricing() {
             id="pricing-title"
             className="text-3xl font-medium tracking-tight text-gray-900"
           >
-            Flat pricing, no management fees.
+            Simple pricing, no hidden fees.
           </h2>
           <p className="mt-2 text-lg text-gray-600">
-            Whether you’re one person trying to get ahead or a big firm trying
-            to take over the world, we’ve got a plan for you.
+            Whether you’re a student aiming to ace your exams or a lifelong
+            learner seeking new knowledge, we’ve got a plan for you.
           </p>
         </div>
 

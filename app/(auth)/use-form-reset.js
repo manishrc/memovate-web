@@ -1,17 +1,15 @@
-import { useEffect, useRef } from "react";
-import { useFormState } from "react-dom";
+import { useEffect, useRef } from 'react';
+import { useFormState } from 'react-dom';
 
-const EMPTY_FORM_STATE = { status: "idle", timestamp: 0 };
+const EMPTY_FORM_STATE = { status: 'idle', timestamp: 0 };
 
 const useFormReset = (action) => {
   const [formState, formAction] = useFormState(action, EMPTY_FORM_STATE);
 
   const formRef = useRef(null);
 
-  console.log({ formState });
-
   useEffect(() => {
-    if (formState.status === "success") {
+    if (formState.status === 'success') {
       formRef.current.reset();
     }
   }, [formState.status, formState.timestamp]);

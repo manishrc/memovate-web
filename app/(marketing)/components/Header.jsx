@@ -115,10 +115,10 @@ export function Header() {
                             <MobileNavLink href="/#faqs">FAQs</MobileNavLink>
                           </div>
                           <div className="mt-8 flex flex-col gap-4">
-                            <Button href="/login" variant="outline">
+                            <SigninButton href="/login" variant="outline">
                               Log in
-                            </Button>
-                            <Button href="#">Sign up</Button>
+                            </SigninButton>
+                            <SignupButton href="/signup">Sign up</SignupButton>
                           </div>
                         </PopoverPanel>
                       </>
@@ -127,15 +127,35 @@ export function Header() {
                 </>
               )}
             </Popover>
-            <Button href="/login" variant="outline" className="hidden lg:block">
+            <SigninButton
+              href="/login"
+              variant="outline"
+              className="hidden lg:block"
+            >
               Log in
-            </Button>
-            <Button href="#" className="hidden lg:block">
+            </SigninButton>
+            <SignupButton href="/signup" className="hidden lg:block">
               Sign up
-            </Button>
+            </SignupButton>
           </div>
         </Container>
       </nav>
     </header>
+  );
+}
+
+function SignupButton(props) {
+  return (
+    <Button href="/signup" {...props}>
+      Sign up
+    </Button>
+  );
+}
+
+function SigninButton(props) {
+  return (
+    <Button href="/login" {...props}>
+      Log in
+    </Button>
   );
 }

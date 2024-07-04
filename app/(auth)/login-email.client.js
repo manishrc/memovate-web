@@ -1,12 +1,12 @@
-"use client";
+'use client';
 
-import { useEffect, useRef, useState } from "react";
-import { useFormState, useFormStatus } from "react-dom";
+import { useEffect, useRef, useState } from 'react';
+import { useFormState, useFormStatus } from 'react-dom';
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 
-import { signInAction } from "./actions";
+import { signInAction } from './actions.js.bak';
 
 export default function LoginWithEmail({ next }) {
   const [inUse, setInUse] = useState(false);
@@ -39,7 +39,7 @@ export default function LoginWithEmail({ next }) {
             ref={inputRef}
             autoFocus
           />
-          {error && "message" in error && !pending ? (
+          {error && 'message' in error && !pending ? (
             <div className="text-red-500 text-xs mt-2">{error.message}</div>
           ) : null}
           <SubmitButton />
@@ -58,13 +58,13 @@ export default function LoginWithEmail({ next }) {
         </>
       )}
 
-      {data && "message" in data && !pending ? (
+      {data && 'message' in data && !pending ? (
         <div className="text-sm absolute inset-0 bg-zinc-50 flex items-center justify-center">
           <div className="max-w-md mx-auto text-center">
             <p className="text-xl font-medium">Check your email </p>
             <p className="mt-4 text-balance leading-relaxed">
               We&apos;ve sent a temporary login link. <br />
-              Please check your inbox at{" "}
+              Please check your inbox at{' '}
               <span className="font-medium">{inputRef.current.value}</span>.
             </p>
             <div className="mt-16">
@@ -94,7 +94,7 @@ function SubmitButton() {
       className="w-full mt-3"
       disabled={pending}
     >
-      {pending ? "Logging in..." : "Continue with Email"}
+      {pending ? 'Logging in...' : 'Continue with Email'}
     </Button>
   );
 }

@@ -1,99 +1,71 @@
-/*
-- Dropbox OAuth Guide: https://developers.dropbox.com/oauth-guide
-- Authjs Provider Signature: https://authjs.dev/reference/core/providers#oauth2configprofile
-- Authjs Provider GitHub example: https://github.com/nextauthjs/next-auth/blob/main/packages/core/src/providers/github.ts
-*/
-
-// https://authjs.dev/guides/upgrade-to-v5#authenticating-server-side
-
 import NextAuth from 'next-auth';
-import EmailProvider from 'next-auth/providers/email';
-import Resend from 'next-auth/providers/resend';
-import GitHub from 'next-auth/providers/github';
 import CredentialsProvider from 'next-auth/providers/credentials';
-import DropboxProvider from 'next-auth/providers/dropbox';
-import { resend, LoginMagicLink } from '@/emails';
-// https://authjs.dev/reference/adapter/drizzle
-import { DrizzleAdapter } from '@auth/drizzle-adapter';
-import db from '@/db';
-import { accounts } from '@/db/schema';
 
 const authOptions = {
   session: {
-    strategy: 'database',
+    strategy: 'jwt',
   },
-  adapter: DrizzleAdapter(db),
   providers: [
-    {
-      id: 'dropbox',
-      name: 'Dropbox',
-      type: 'oidc',
-      clientId: process.env.AUTH_DROPBOX_ID,
-      clientSecret: process.env.AUTH_DROPBOX_SECRET,
-      allowDangerousEmailAccountLinking: true,
-      issuer: 'https://www.dropbox.com',
-      wellKnown: 'https://www.dropbox.com/.well-known/openid-configuration',
-      authorization: {
-        url: 'https://www.dropbox.com/oauth2/authorize',
-        params: {
-          scope: 'openid profile email account_info.read files.content.read',
-          token_access_type: 'offline',
-          response_type: 'code', // OICD
-        },
+    CredentialsProvider({
+      id: 'credentials',
+      credentials: {
+        username: { label: 'Username', type: 'email' },
+        password: { label: 'Password', type: 'password' },
       },
-      // Dropbox always provides a verified email: https://developers.dropbox.com/oidc-guide
-      token: {
-        url: 'https://api.dropboxapi.com/oauth2/token',
-      },
-      profile(profile) {
-        return {
-          ...profile,
-          name: `${profile.given_name} ${profile.family_name}`,
-        };
-      },
-    },
-
-    Resend({
-      server: process.env.EMAIL_SERVER,
-      from: process.env.EMAIL_FROM,
-      async sendVerificationRequest({
-        identifier: email,
-        url,
-        token,
-        baseUrl,
-        provider,
-      }) {
-        const { data, error } = await resend.emails.send({
-          from: 'hello@resend.manishrc.com',
-          to: 'hi@manishrc.com',
-          subject: `Your login link for ${process.env.NEXT_PUBLIC_APP_NAME}`,
-          //   html: render(<ExampleEmail ctaLink="https://manishrc.com" />),
-          react: (
-            <LoginMagicLink
-              loginLink={url}
-              appName={process.env.NEXT_PUBLIC_APP_NAME}
-              appHome={process.env.NEXTAUTH_URL}
-            />
-          ),
+      async authorize({ username, password }) {
+        const response = await fetch('https://api.memovate.com/oauth/token', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            grant_type: 'password',
+            email: username,
+            password: password,
+          }),
         });
-      },
-    }),
 
-    GitHub({
-      clientId: process.env.AUTH_GITHUB_ID,
-      clientSecret: process.env.AUTH_GITHUB_SECRET,
-      allowDangerousEmailAccountLinking: true,
-      profile(profile) {
-        return {
-          id: profile.id,
-          name: profile.name,
-          email: profile.email,
-          emailVerified: profile.email_verified,
-          image: profile.avatar_url,
-        };
+        if (!response.ok) return null;
+
+        const user = await response.json();
+
+        return user ?? null;
       },
     }),
   ],
+  callbacks: {
+    async jwt({ token, user }) {
+      if (user) {
+        token.accessToken = user.access_token;
+        token.refreshToken = user.refresh_token;
+        token.accessTokenExpires = Date.now() + user.expires_in * 1000;
+      }
+
+      // Handle token refresh logic here if needed
+      if (token.accessTokenExpires && Date.now() > token.accessTokenExpires) {
+        const response = await fetch('https://api.memovate.com/oauth/token', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            grant_type: 'refresh_token',
+            refresh_token: token.refreshToken,
+          }),
+        });
+
+        if (!response.ok) return false;
+
+        const user = await response.json();
+
+        token.accessToken = user.access_token;
+        token.refreshToken = user.refresh_token;
+        token.accessTokenExpires = Date.now() + user.expires_in * 1000;
+      }
+
+      return token;
+    },
+  },
   pages: {
     signIn: '/login',
     // signOut: "/auth/signout",

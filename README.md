@@ -1,13 +1,10 @@
 ## Index
 
 - [Getting Started](#getting-started)
-- [Database](#database)
 - [Authentication](#authentication)
 - [Error Reporting](#error-reporting)
-- [Debugging](#debugging)
-- [Email](#email)
-- [UI](#ui)
 - [Forms](#forms)
+- [UI](#ui)
 - [Misc](#misc)
 - [Next Up](#next-up)
 
@@ -15,30 +12,38 @@
 
 ## Getting Started
 
-```bash
-npx degit manishrc/next-zero
-```
+### Clone the repository
 
 ```bash
-npm i
+git clone git@github.com:manishrc/memovate-web.git
+cd memovate-web
 ```
 
-```bash
-npm run dev:all
-```
+### Environment
 
-- [App](http://localhost:3000)
-- [Browse DB](https://localhost:3001)
-- [Email](http://localhost:3002)
+Copy the `.env.example` file to `.env.local` and update the values
 
-Add a cloudflare tunnel
-https://one.dash.cloudflare.com/networks/tunnels and update the domain for `AUTH_URL` in .env.local
+Tip: Install [Cloudflare Tunnel](https://one.dash.cloudflare.com/networks/tunnels) for local development and point something like local.<your-domain>.com to localhost:3000
+
+Set your CF Tunnel domain as `AUTH_URL` in the `.env.local` file. This will allow the app to be accessible externally, such as for receiving webhooks from external services.
 
 For ngrok, add
 
 ```
 "tunnel": "ngrok http --domain=lasting-gar-quick.ngrok-free.app 3000 --log stdout --log-level warn",
 ```
+
+### Install dependencies and start the app
+
+```bash
+npm i
+```
+
+```bash
+npm run dev
+```
+
+See app running at [http://localhost:3000](http://localhost:3000)
 
 ## Development
 
@@ -48,31 +53,11 @@ Add shadcn ui components:
 npx shadcn-ui@latest add button
 ```
 
-<a href="#database"></a>
-
-## Database
-
-Data layer uses the [Drizzle ORM](https://orm.drizzle.team/docs), with [Neon DB](https://neon.tech/) using [Neon's Serverless Driver](https://neon.tech/docs/serverless/serverless-driver)
-
-Add new tables by editing `~/db/schema.js`
-
-If error: `permission denied for schema public`,
-then execute the folllwing in psql: `GRANT CREATE ON SCHEMA public TO postgres;`
-
 <a href="#authentication"></a>
 
 ## Authentication
 
-Authentication uses auth.js
-
-```
-DROP TABLE "accounts";
-DROP TABLE "sessions";
-DROP TABLE "users";
-DROP TABLE "verificationTokens";
-```
-
-### Remove existing tables
+Authentication uses [auth.js](https://authjs.dev/)
 
 <a href="#error-reporting"></a>
 
@@ -82,13 +67,12 @@ DROP TABLE "verificationTokens";
 npx @sentry/wizard@latest -i nextjs
 ```
 
-<a href="#debugging"></a>
+<a href="#forms"></a>
 
-## Debugging
+## Forms
 
-<a href="#email"></a>
-
-## Email
+- [react-hook-form](https://www.npmjs.com/package/react-hook-form)
+- [zodResolver](https://www.npmjs.com/package/@hookform/resolvers)
 
 <a href="#ui"></a>
 
@@ -114,16 +98,6 @@ npx @sentry/wizard@latest -i nextjs
 - Draw Canvas: [TLDraw](https://tldraw.dev/) or [Excalidraw](https://excalidraw.com/)
 - Diagram: [Mermaid](https://mermaid.js.org/)
 
-<a href="#forms"></a>
-
-## Forms
-
-- [react-hook-form](https://www.npmjs.com/package/react-hook-form)
-- [zodResolver](https://www.npmjs.com/package/@hookform/resolvers)
-
-- [ ] How to display server erros
-- [ ] How to compose complex forms
-
 <a href="#misc"></a>
 
 ## Misc
@@ -132,8 +106,8 @@ npx @sentry/wizard@latest -i nextjs
 - Domain name parsing: [psl](https://www.npmjs.com/package/psl)
 - Short ID: [nanoid](https://www.npmjs.com/package/nanoid) + [nanoid-dictionary](https://www.npmjs.com/package/nanoid-dictionary).
   ```javascript
-  import { customAlphabet } from "nanoid";
-  import { nolookalikes } from "nanoid-dictionary";
+  import { customAlphabet } from 'nanoid';
+  import { nolookalikes } from 'nanoid-dictionary';
   const nanoid = customAlphabet(nolookalikes, 12);
   ```
 - Dates: [date-fns](https://github.com/date-fns/date-fns)
@@ -157,9 +131,3 @@ npx @sentry/wizard@latest -i nextjs
 - Hooks for browser APIs (geo, Mouse, Network, etc): [useHooks](https://github.com/uidotdev/usehooks)
 - Viewport aware Tooltips, popovers, dialogs :[Floating UI](https://floating-ui.com/)
 - Emojis: [emoji-mart](https://github.com/missive/emoji-mart)
-
-  <a href="#next-up"></a>
-
-## Next Up
-
-- [ ] Fix dropbox auth: https://authjs.dev/guides/configuring-oauth-providers, https://authjs.dev/guides/configuring-oauth-providers#use-your-own-provider

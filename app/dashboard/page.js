@@ -1,5 +1,7 @@
 import { auth, signOut } from '@/auth';
 import { redirect } from 'next/navigation';
+import { Button } from '@/components/ui/button';
+
 export default async function Page() {
   const session = await auth();
   const user = session?.user;
@@ -12,6 +14,7 @@ export default async function Page() {
       <div className="max-w-2xl bg-zinc-100 mx-auto mb-64 p-6 rounded ">
         {JSON.stringify(session, null, 2)}
       </div>
+      <Button href="/review">Start Review</Button>
     </>
   );
 }

@@ -1,6 +1,8 @@
 import NextAuth from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 
+const EXPIRE_BUFFER = 60 * 1000; // 1 minute
+
 const authOptions = {
   session: {
     strategy: 'jwt',
@@ -12,58 +14,119 @@ const authOptions = {
         username: { label: 'Username', type: 'email' },
         password: { label: 'Password', type: 'password' },
       },
-      async authorize({ username, password }) {
-        const response = await fetch('https://api.memovate.com/oauth/token', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            grant_type: 'password',
-            email: username,
-            password: password,
-          }),
-        });
+      async authorize({ username, password }, request) {
+        // Get Auth Token
+        const authResponse = await fetch(
+          'https://api.memovate.com/oauth/token',
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              grant_type: 'password',
+              email: username,
+              password: password,
+            }),
+          }
+        );
 
-        if (!response.ok) return null;
+        // TODO: Throw error if response is not ok
+        if (!authResponse.ok) return null;
 
-        const user = await response.json();
+        const {
+          // token_type: tokenType,
+          access_token: accessToken,
+          refresh_token: refreshToken,
+          expires_in: expiresIn, // Seconds
+          created_at: createdAt, // UNIX timestamp
+        } = await authResponse.json();
 
-        return user ?? null;
+        // Get user info
+        const userResponse = await fetch(
+          'https://api.memovate.com/api/users/info',
+          {
+            method: 'GET',
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
+        );
+
+        const {
+          id,
+          user: name,
+          email,
+          // `image` doesn't exist
+        } = await userResponse.json();
+
+        const user =
+          {
+            id,
+            name,
+            email,
+            // image: undefined, //  Add Image ,
+            accessToken,
+            refreshToken,
+            createdAt,
+            expiresIn, // Seconds
+            expiresAt: (createdAt + expiresIn) * 1000,
+          } ?? null;
+
+        return user;
       },
     }),
   ],
   callbacks: {
-    async jwt({ token, user }) {
+    // https://authjs.dev/reference/core#jwt
+    async jwt({ token, user, account, isNewUser, trigger }) {
       if (user) {
-        token.accessToken = user.access_token;
-        token.refreshToken = user.refresh_token;
-        token.accessTokenExpires = Date.now() + user.expires_in * 1000;
+        return {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          accessToken: user.accessToken,
+          refreshToken: user.refreshToken,
+          expiresAt: user.expiresAt,
+          iat: user.createdAt,
+          exp: user.createdAt + user.expiresIn,
+        };
       }
 
-      // Handle token refresh logic here if needed
-      if (token.accessTokenExpires && Date.now() > token.accessTokenExpires) {
-        const response = await fetch('https://api.memovate.com/oauth/token', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            grant_type: 'refresh_token',
-            refresh_token: token.refreshToken,
-          }),
-        });
+      // if token is expired, refresh token
+      if (token?.expiresAt - EXPIRE_BUFFER < Date.now()) {
+        const {
+          access_token: accessToken,
+          expires_in: expiresIn,
+          refresh_token: refreshToken,
+          created_at: createdAt,
+        } = await rotateToken(token?.refreshToken);
 
-        if (!response.ok) return false;
-
-        const user = await response.json();
-
-        token.accessToken = user.access_token;
-        token.refreshToken = user.refresh_token;
-        token.accessTokenExpires = Date.now() + user.expires_in * 1000;
+        token = {
+          ...token,
+          accessToken,
+          refreshToken,
+          expiresIn,
+          expiresAt: (createdAt + expiresIn) * 1000,
+          iat: createdAt,
+          exp: createdAt + expiresIn,
+        };
       }
 
       return token;
+    },
+
+    // https://authjs.dev/reference/core#session
+    async session({ session, token }) {
+      return {
+        user: {
+          id: token.id,
+          name: token.name,
+          email: token.email,
+        },
+        expiresAt: token.expiresAt,
+        accessToken: token.accessToken,
+      };
     },
   },
   pages: {
@@ -74,5 +137,20 @@ const authOptions = {
     // newUser: "/auth/new-user", // New users will be directed here on first sign in (leave the property out if not of interest)
   },
 };
+
+async function rotateToken(refreshToken) {
+  const response = await fetch('https://api.memovate.com/oauth/token', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      grant_type: 'refresh_token',
+      refresh_token: refreshToken,
+    }),
+  });
+
+  return response.json();
+}
 
 export const { handlers, signIn, signOut, auth } = NextAuth(authOptions);

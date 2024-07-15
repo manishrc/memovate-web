@@ -9,14 +9,14 @@ let nextConfig = {
   //   );
   //   return config;
   // },
-  async rewrites() {
-    return [
-      {
-        source: '/api/:path*',
-        destination: `${process.env.BACKEND_URL}/:path*`,
-      },
-    ];
-  },
+  // async rewrites() {
+  //   return [
+  //     {
+  //       source: '/api/:path*',
+  //       destination: `${process.env.BACKEND_URL}/:path*`,
+  //     },
+  //   ];
+  // },
 
   async redirects() {
     return [

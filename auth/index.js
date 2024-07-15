@@ -1,4 +1,4 @@
-import NextAuth from 'next-auth';
+import NextAuth, { CredentialsSignin } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 
 const EXPIRE_BUFFER = 60 * 1000; // 1 minute
@@ -32,15 +32,15 @@ const authOptions = {
         );
 
         // TODO: Throw error if response is not ok
-        if (!authResponse.ok) return null;
+        if (!authResponse.ok)
+          throw new CredentialsSignin(
+            await authResponse
+              .json()
+              .then(({ error_description }) => error_description)
+          );
 
-        const {
-          // token_type: tokenType,
-          access_token: accessToken,
-          refresh_token: refreshToken,
-          expires_in: expiresIn, // Seconds
-          created_at: createdAt, // UNIX timestamp
-        } = await authResponse.json();
+        const { accessToken, refreshToken, expiresIn, createdAt } =
+          await authResponse.json().then(transformResponse);
 
         // Get user info
         const userResponse = await fetch(
@@ -95,12 +95,8 @@ const authOptions = {
 
       // if token is expired, refresh token
       if (token?.expiresAt - EXPIRE_BUFFER < Date.now()) {
-        const {
-          access_token: accessToken,
-          expires_in: expiresIn,
-          refresh_token: refreshToken,
-          created_at: createdAt,
-        } = await rotateToken(token?.refreshToken);
+        const { accessToken, expiresIn, refreshToken, createdAt } =
+          await rotateToken(token?.refreshToken).then(transformResponse);
 
         token = {
           ...token,
@@ -151,6 +147,15 @@ async function rotateToken(refreshToken) {
   });
 
   return response.json();
+}
+
+async function transformResponse(responseJson) {
+  return {
+    accessToken: responseJson.access_token,
+    refreshToken: responseJson.refresh_token,
+    expiresIn: responseJson.expires_in, // Seconds
+    createdAt: responseJson.created_at, // UNIX Timestamp
+  };
 }
 
 export const { handlers, signIn, signOut, auth } = NextAuth(authOptions);

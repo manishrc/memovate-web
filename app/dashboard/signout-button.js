@@ -9,7 +9,7 @@ export default function SignOutButton(props) {
       onClick={() =>
         signOut({
           redirect: true,
-          callbackUrl: `/`,
+          callbackUrl: `/login`,
         })
       }
     >

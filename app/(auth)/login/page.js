@@ -14,7 +14,11 @@ export default function LoginForm() {
         action={async (formData) => {
           'use server';
           const { username, password } = Object.fromEntries(formData);
-          return await signIn('credentials', { username, password });
+          return await signIn('credentials', {
+            username,
+            password,
+            redirectTo: '/dashboard',
+          });
         }}
       >
         <div>

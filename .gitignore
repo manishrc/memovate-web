@@ -48,3 +48,14 @@ next-env.d.ts
 tags
 # Sentry Config File
 .sentryclirc
+
+# Sentry Config File
+.env.sentry-build-plugin
+
+# Ignore service worker files
+sw.js
+sw.js.map
+
+# Ignore Workbox generated files
+workbox-*.js
+workbox-*.js.map

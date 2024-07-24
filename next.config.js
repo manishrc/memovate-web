@@ -1,5 +1,19 @@
 /** @type {import('next').NextConfig} */
-let nextConfig = {
+
+const { withSentryConfig } = require('@sentry/nextjs');
+const withBundleAnalyzer = require('@next/bundle-analyzer')({
+  enabled: process.env.ANALYZE === 'true',
+});
+const withPWA = require('next-pwa')({
+  dest: 'public',
+  // disable: process.env.NODE_ENV === 'development',
+  // register: true,
+  // scope: '/app',
+  // sw: 'service-worker.js',
+  //...
+});
+
+module.exports = {
   // Enable for Cloudflare Workers
   // webpack: (config, { webpack }) => {
   //   config.plugins.push(
@@ -29,64 +43,55 @@ let nextConfig = {
           },
         ],
         permanent: false,
-        destination: '/dashboard',
+        destination: '/app',
       },
     ];
   },
 };
 
-// module.exports = nextConfig;
+module.exports = withPWA(module.exports);
 
-// Bundle Size
-const withBundleAnalyzer = require('@next/bundle-analyzer')({
-  enabled: process.env.ANALYZE === 'true',
-});
-nextConfig =
+module.exports =
   process.env.NODE_ENV === 'development'
-    ? withBundleAnalyzer(nextConfig)
-    : nextConfig;
+    ? withBundleAnalyzer(module.exports)
+    : module.exports;
 
 // Injected content via Sentry wizard below
 
 module.exports =
   process.env.NODE_ENV === 'development'
-    ? nextConfig
-    : require('@sentry/nextjs').withSentryConfig(
-        nextConfig,
-        {
-          // For all available options, see:
-          // https://github.com/getsentry/sentry-webpack-plugin#options
+    ? module.exports
+    : withSentryConfig(module.exports, {
+        // For all available options, see:
+        // https://github.com/getsentry/sentry-webpack-plugin#options
 
-          // Suppresses source map uploading logs during build
-          silent: true,
-          org: process.env.SENTRY_ORG,
-          project: process.env.SENTRY_PROJECT,
-        },
-        {
-          // For all available options, see:
-          // https://docs.sentry.io/platforms/javascript/guides/nextjs/manual-setup/
+        org: 'manishrc',
+        project: 'memovate-web',
 
-          // Upload a larger set of source maps for prettier stack traces (increases build time)
-          widenClientFileUpload: true,
+        // Only print logs for uploading source maps in CI
+        silent: !process.env.CI,
 
-          // Transpiles SDK to be compatible with IE11 (increases bundle size)
-          transpileClientSDK: true,
+        // For all available options, see:
+        // https://docs.sentry.io/platforms/javascript/guides/nextjs/manual-setup/
 
-          // Routes browser requests to Sentry through a Next.js rewrite to circumvent ad-blockers. (increases server load)
-          // Note: Check that the configured route will not match with your Next.js middleware, otherwise reporting of client-
-          // side errors will fail.
-          tunnelRoute: '/monitoring',
+        // Upload a larger set of source maps for prettier stack traces (increases build time)
+        widenClientFileUpload: true,
 
-          // Hides source maps from generated client bundles
-          hideSourceMaps: true,
+        // Uncomment to route browser requests to Sentry through a Next.js rewrite to circumvent ad-blockers.
+        // This can increase your server load as well as your hosting bill.
+        // Note: Check that the configured route will not match with your Next.js middleware, otherwise reporting of client-
+        // side errors will fail.
+        // tunnelRoute: "/monitoring",
 
-          // Automatically tree-shake Sentry logger statements to reduce bundle size
-          disableLogger: true,
+        // Hides source maps from generated client bundles
+        hideSourceMaps: true,
 
-          // Enables automowatic instrumentation of Vercel Cron Monitors.
-          // See the following for more information:
-          // https://docs.sentry.io/product/crons/
-          // https://vercel.com/docs/cron-jobs
-          automaticVercelMonitors: true,
-        }
-      );
+        // Automatically tree-shake Sentry logger statements to reduce bundle size
+        disableLogger: true,
+
+        // Enables automatic instrumentation of Vercel Cron Monitors. (Does not yet work with App Router route handlers.)
+        // See the following for more information:
+        // https://docs.sentry.io/product/crons/
+        // https://vercel.com/docs/cron-jobs
+        automaticVercelMonitors: true,
+      });

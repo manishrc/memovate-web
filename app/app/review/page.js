@@ -1,3 +1,5 @@
+'use client';
+
 import { cn } from '@/lib/utils';
 import {
   MdTimer as TimerIcon,
@@ -6,8 +8,34 @@ import {
   MdFlip as FlipIcon,
   MdOutlineSwipe as SwipeIcon,
 } from 'react-icons/md';
-
 import { HiSparkles as MagicIcon } from 'react-icons/hi2';
+import useSWR from 'swr';
+import { useSession } from 'next-auth/react';
+import React, {
+  createContext,
+  useState,
+  useContext,
+  useRef,
+  useEffect,
+} from 'react';
+
+const useReview = () => {
+  const { data: session } = useSession();
+  const { data, error } = useSWR(session?.accessToken ? 'review' : null, () =>
+    fetch('https://api.memovate.com/api/card_sets/next', {
+      headers: {
+        Authorization: `Bearer ${session.accessToken}`,
+      },
+    }).then((res) => res.json())
+  );
+
+  return {
+    data,
+    isLoading: !error && !data,
+    isError: error,
+  };
+};
+
 const data = {
   card_set_id: '49bb7bf2-33e6-4add-8e61-b32181995a17',
   user_id: 'd06c013d-6849-4f6e-ab54-be46f546dc9e',
@@ -107,30 +135,94 @@ const data = {
   ],
 };
 
+// Timer should use the latest functional react component
+// Timer comonent should allow the consumer to control start, pause, stop and reset
+// Timer component should render the time in 10ms intervals
+// Timer component should not triger rerendeingin the consumer
+// Consumer of Timer should be able to access the current timer value when needed=
+
+const TimerContext = createContext();
+
+export const TimerProvider = ({ children }) => {
+  const [time, setTime] = useState(0);
+  const [isRunning, setIsRunning] = useState(false);
+  const timerRef = useRef(null);
+
+  const start = () => {
+    if (!isRunning) {
+      setIsRunning(true);
+      timerRef.current = setInterval(() => {
+        setTime((prevTime) => prevTime + 10);
+      }, 10);
+    }
+  };
+
+  const pause = () => {
+    if (isRunning) {
+      clearInterval(timerRef.current);
+      setIsRunning(false);
+    }
+  };
+
+  const stop = () => {
+    clearInterval(timerRef.current);
+    setIsRunning(false);
+    setTime(0);
+  };
+
+  const reset = () => {
+    clearInterval(timerRef.current);
+    setIsRunning(false);
+    setTime(0);
+  };
+
+  useEffect(() => {
+    return () => clearInterval(timerRef.current);
+  }, []);
+
+  return (
+    <TimerContext.Provider value={{ time, start, pause, stop, reset }}>
+      {children}
+    </TimerContext.Provider>
+  );
+};
+
+export const useTimer = () => useContext(TimerContext);
+
 export default function ReviewPage() {
+  const { data, isLoading, isError } = useReview();
+  const timerRef = useRef(null);
+
+  const cards = data?.cards || [];
+  const currentCard = cards.filter((card) => card.has_review === false)[0];
+  const currentCardIndex = cards.indexOf(currentCard);
+  const currentCardFront = currentCard?.front_card_face_text;
+  const currentCardBack = currentCard?.back_card_face_text;
+
   return (
     <>
       <div className="bg-zinc-100 h-dvh flex flex-col">
         <div className="pt-3 px-4">
-          <SegmentProgress total={10} current={4} />
+          <SegmentProgress
+            total={cards.length}
+            current={currentCardIndex + 1}
+          />
+
           <div className="flex justify-between mt-1">
             <button className="w-11 h-11 inline-flex items-center justify-center -ml-2.5 opacity-30">
               <CrossIcon className="h-6 w-6" />
             </button>
             <div className="inline-flex items-center gap-1">
               <span className="font-bold tabular-nums text-base opacity-30">
-                0.244
+                1.242
               </span>
               <TimerIcon className="h-5 w-5 text-black opacity-30" />
             </div>
           </div>
         </div>
+        <div>{/* Timer */}</div>
         <div className="px-4 mt-1">
-          <Card
-            front={data.cards[0].front_card_face_text}
-            back={data.cards[0].back_card_face_text}
-            reveal
-          />
+          <Card front={currentCardFront} back={currentCardBack} reveal />
         </div>
         <div className="mt-3">
           <ActionBar />
@@ -163,7 +255,7 @@ function Card({ front = '', back = '', reveal = false }) {
 
   return (
     <>
-      <div className="relative rounded-2xl drop-shadow bg-white p-8 w-full aspect-[1/1.4]">
+      <div className="relative rounded-2xl drop-shadow bg-white p-8 w-full aspect-[1/1.4] max-h-[calc(100dvh-176px)] max-w-lg mx-auto">
         <div className="flex flex-col">
           <div
             className={cn(

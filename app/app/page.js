@@ -2,10 +2,10 @@
 
 import FlashCard from '@/components/FlashCard';
 import { Button } from '@/components/ui/button';
-import { useCardSet } from '@/lib/hooks';
+import { useCardSet, useUser } from '@/lib/hooks';
 import { cn } from '@/lib/utils';
 import * as Dialog from '@radix-ui/react-dialog';
-import { forwardRef, useEffect, useRef, useState } from 'react';
+import { forwardRef, useEffect, useReducer, useRef, useState } from 'react';
 import { HiSparkles as MagicIcon } from 'react-icons/hi2';
 import {
   MdCheck as CheckIcon,
@@ -15,39 +15,54 @@ import {
 } from 'react-icons/md';
 import Timer from '@/components/Timer';
 import PlayingCard from '@/components/PlayingCard';
+import { useSession } from 'next-auth/react';
+import { redirect } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 
 export default function Home() {
+  const router = useRouter();
   const { isLoading } = useCardSet();
+  const session = useSession();
+  const user = useUser();
+  if (session.status === 'unauthenticated') {
+    router.push('/login');
+  }
 
   return (
-    <div className="flex flex-col p-6">
-      <h1 className="text-5xl font-bold tracking-tight text-balance text-center mb-12 mt-24">
-        Strengthen your memory in 10 min
-      </h1>
-      <div className="flex -space-x-[30%] justify-center mb-24">
-        {Array.from({ length: 10 }).map((_, index) => (
-          <PlayingCard
-            key={index}
-            style={{
-              transform: `rotate(${(index + 1) * 2 - 10}deg) translateY(${
-                Math.abs(index + 1 - 5) * 2
-              }px)`,
-            }}
-          />
-        ))}
+    <div>
+      <div className="flex flex-col p-6">
+        <h2 className="text-xl font-bold tracking-tight text-balance text-center mb-3 mt-24">
+          Welcome Back, {user.name}
+        </h2>
+        <h1 className="text-5xl font-bold tracking-tight text-balance text-center mb-12 mt-12">
+          Strengthen your memory in 10 min
+        </h1>
+        <div className="flex  justify-center mb-24 w-full max-w-md mx-auto px-12">
+          {Array.from({ length: 10 }).map((_, index) => (
+            <PlayingCard
+              key={index}
+              className="shrink-0"
+              style={{
+                transform: `rotate(${(index + 1) * 2 - 10}deg) translateY(${
+                  Math.abs(index + 1 - 10) * 2
+                }px)`,
+              }}
+            />
+          ))}
+        </div>
+        <Dialog.Root>
+          <Dialog.Trigger asChild>
+            <Button className="max-w-md mx-auto" size="lg" disabled={isLoading}>
+              {isLoading ? 'Loading...' : 'Start Review'}
+            </Button>
+          </Dialog.Trigger>
+          <Dialog.Portal>
+            <Dialog.Content className="fixed inset-0 bg-zinc-100">
+              <ReviewSet />
+            </Dialog.Content>
+          </Dialog.Portal>
+        </Dialog.Root>
       </div>
-      <Dialog.Root>
-        <Dialog.Trigger asChild>
-          <Button size="lg" disabled={isLoading}>
-            {isLoading ? 'Loading...' : 'Start Review'}
-          </Button>
-        </Dialog.Trigger>
-        <Dialog.Portal>
-          <Dialog.Content className="fixed inset-0 bg-zinc-100">
-            <ReviewSet />
-          </Dialog.Content>
-        </Dialog.Portal>
-      </Dialog.Root>
     </div>
   );
 }
@@ -77,26 +92,27 @@ function ReviewSet() {
   const currentCardIndex = cards.indexOf(currentCard);
   const currentCardFront = currentCard?.front_card_face_text;
   const currentCardBack = currentCard?.back_card_face_text;
+  const isSetDone = cards.length === 10 && !currentCard;
+
+  const updateCardResult = (result) => {
+    mutate(updateCard(data, currentCard?.id), {
+      revalidate: false,
+    });
+    setCurrentCardFlipped(false);
+    updateCardReview({
+      cardId: currentCard?.id,
+      result: true,
+      responseTime: timerRef.current.getTime(),
+    });
+  };
 
   const handleAction = (action) => {
     switch (action) {
       case 'correct':
-        mutate(updateCard(data, currentCard?.id));
-        setCurrentCardFlipped(false);
-        updateCardReview({
-          cardId: currentCard?.id,
-          result: true,
-          responseTime: timerRef.current.getTime(),
-        });
+        updateCardResult(true);
         break;
       case 'incorrect':
-        mutate(updateCard(data, currentCard?.id));
-        setCurrentCardFlipped(false);
-        updateCardReview({
-          cardId: currentCard?.id,
-          result: false,
-          responseTime: timerRef.current.getTime(),
-        });
+        updateCardResult(false);
         break;
       case 'chat':
         console.log('Chat');
@@ -122,26 +138,33 @@ function ReviewSet() {
           <Dialog.Close className="w-11 h-11 inline-flex items-center justify-center -ml-2.5 opacity-30">
             <CrossIcon className="h-6 w-6" />
           </Dialog.Close>
-          <Timer ref={timerRef} key={currentCard?.id} />
+          {!isSetDone && <Timer ref={timerRef} key={currentCard?.id} />}
         </div>
       </div>
-      <div>{/* Timer */}</div>
-      <div className="px-4 mt-1">
-        <FlashCard
-          front={currentCardFront}
-          back={currentCardBack}
-          onFlip={onFlip}
-          flipped={currentCardFlipped}
-          key={currentCard?.id}
-        />
-      </div>
-      <div className="mt-3">
-        <ActionBar
-          onFlip={onFlip}
-          flipped={currentCardFlipped}
-          onAction={handleAction}
-        />
-      </div>
+      {isSetDone ? (
+        <div className="pt-3 px-4 flex items-center justify-center">
+          Well Done
+        </div>
+      ) : (
+        <>
+          <div className="px-4 mt-1">
+            <FlashCard
+              front={currentCardFront}
+              back={currentCardBack}
+              onFlip={onFlip}
+              flipped={currentCardFlipped}
+              key={currentCard?.id}
+            />
+          </div>
+          <div className="mt-3">
+            <ActionBar
+              onFlip={onFlip}
+              flipped={currentCardFlipped}
+              onAction={handleAction}
+            />
+          </div>
+        </>
+      )}
     </>
   );
 }

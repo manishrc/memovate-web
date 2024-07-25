@@ -43,13 +43,13 @@ module.exports = {
           },
         ],
         permanent: false,
-        destination: '/app',
+        destination: process.env.AUTH_DEFAULT_LOGGED_IN_URL,
       },
     ];
   },
 };
 
-// module.exports = withPWA(module.exports);
+module.exports = withPWA(module.exports);
 
 module.exports =
   process.env.NODE_ENV === 'development'

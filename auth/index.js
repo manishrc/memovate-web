@@ -94,7 +94,7 @@ const authOptions = {
       }
 
       // if token is expired, refresh token
-      if (token?.expiresAt - EXPIRE_BUFFER < Date.now()) {
+      if (!token?.expiresAt || token?.expiresAt - EXPIRE_BUFFER < Date.now()) {
         const { accessToken, expiresIn, refreshToken, createdAt } =
           await rotateToken(token?.refreshToken).then(transformResponse);
 

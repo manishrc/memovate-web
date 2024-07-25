@@ -17,7 +17,7 @@ export default function LoginForm() {
           return await signIn('credentials', {
             username,
             password,
-            redirectTo: '/app',
+            redirectTo: process.env.AUTH_DEFAULT_LOGGED_IN_URL,
           });
         }}
       >

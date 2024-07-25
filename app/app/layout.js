@@ -10,6 +10,17 @@ export const metadata = {
   description: process.env.NEXT_PUBLIC_APP_DESCRIPTION,
 };
 
+export const viewport = {
+  // minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no, user-scalable=no, viewport-fit=cover
+  themeColor: '#F4F4F5',
+  minimumScale: '1',
+  initialScale: '1',
+  width: 'device-width',
+  shrinkToFit: 'no',
+  userScalable: 'no',
+  viewportFit: 'cover',
+};
+
 export default async function RootLayout({ children }) {
   const session = await auth();
   return (

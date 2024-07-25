@@ -37,6 +37,7 @@ export default function LoginForm() {
             className=""
             id="password"
             name="password"
+            type="password"
             placeholder="Enter password"
             required
           />

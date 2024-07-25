@@ -14,6 +14,13 @@ const Timer = forwardRef(function Timer({}, ref) {
   const requestRef = useRef();
   const previousTimeRef = useRef();
 
+  // Format from ms to decimal seconds
+  const format = (ms) => {
+    const seconds = Math.floor(ms / 1000);
+    const decimals = Math.floor((ms % 1000) / 10);
+    return `${seconds}.${decimals.toString().padStart(2, '0')}`;
+  };
+
   useImperativeHandle(ref, () => ({
     getTime: () => time,
     setTimeMs: (newTime) => setTime(newTime),
@@ -32,6 +39,7 @@ const Timer = forwardRef(function Timer({}, ref) {
   const tick = (timestamp) => {
     if (previousTimeRef.current !== undefined && !isPaused) {
       const deltaTime = timestamp - previousTimeRef.current;
+
       setTime((prevTime) => prevTime + Math.round(deltaTime));
     }
     previousTimeRef.current = timestamp;
@@ -47,7 +55,7 @@ const Timer = forwardRef(function Timer({}, ref) {
     };
   }, [isPaused]);
 
-  return <>{time}</>;
+  return format(time);
 });
 
 export default Timer;

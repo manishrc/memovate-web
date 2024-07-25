@@ -12,6 +12,7 @@ import { useRouter } from 'next/navigation';
 import { useRef, useState } from 'react';
 import { HiSparkles as MagicIcon } from 'react-icons/hi2';
 import {
+  MdTimer as TimerIcon,
   MdCheck as CheckIcon,
   MdClose as CrossIcon,
   MdFlip as FlipIcon,
@@ -141,7 +142,14 @@ function ReviewSet() {
           <Dialog.Close className="w-11 h-11 inline-flex items-center justify-center -ml-2.5 opacity-30">
             <CrossIcon className="h-6 w-6" />
           </Dialog.Close>
-          {!isSetDone && <Timer ref={timerRef} key={currentCard?.id} />}
+          {!isSetDone && (
+            <div className="flex items-center gap-1 opacity-50">
+              <div className=" tabular-nums text-right font-semibold">
+                <Timer ref={timerRef} key={currentCard?.id} />
+              </div>
+              <TimerIcon className="h-6 w-6 relative -top-px" />
+            </div>
+          )}
         </div>
       </div>
       {isSetDone ? (

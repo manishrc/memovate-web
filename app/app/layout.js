@@ -13,9 +13,9 @@ export const metadata = {
 export default async function RootLayout({ children }) {
   const session = await auth();
   return (
-    <SessionProvider session={session}>
-      <ThemeProvider themes="system">{children}</ThemeProvider>
-    </SessionProvider>
+    <ThemeProvider themes="system">
+      <SessionProvider session={session}>{children}</SessionProvider>
+    </ThemeProvider>
   );
 }
 

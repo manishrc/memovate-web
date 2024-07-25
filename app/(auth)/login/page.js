@@ -17,7 +17,7 @@ export default function LoginForm() {
           return await signIn('credentials', {
             username,
             password,
-            redirectTo: '/dashboard',
+            redirectTo: '/app',
           });
         }}
       >

@@ -30,15 +30,12 @@ export default function Home() {
   if (!user) return null;
 
   return (
-    <div>
-      <div className="flex flex-col">
-        <h2 className="text-xl font-bold tracking-tight text-balance text-center mb-3 mt-24 px-6">
-          Welcome Back, {user?.name}
-        </h2>
-        <h1 className="text-5xl font-bold tracking-tight text-balance text-center mb-12 mt-12  px-6">
-          Strengthen your memory in 10 min
-        </h1>
-        <div className="w-full overflow-hidden py-12">
+    <div className="flex flex-col h-dvh items-center">
+      <h2 className="text-xl font-bold tracking-tight text-balance text-center mb-3 mt-12 px-6">
+        Welcome back, {user?.name}
+      </h2>
+      <div className="grow md:grow-0 self-stretch flex flex-col items-center">
+        <div className="w-full overflow-hidden py-12 ">
           <div className="flex justify-center mb-12 w-full max-w-md mx-auto">
             {Array.from({ length: 10 }).map((_, index) => (
               <PlayingCard
@@ -54,19 +51,24 @@ export default function Home() {
             ))}
           </div>
         </div>
-        <Dialog.Root>
+        <h1 className="isolate md:-mt-32 text-5xl md:text-7xl max-w-lg font-bold tracking-tighter text-balance text-center px-6 ">
+          Strengthen your memory in 10 min
+        </h1>
+      </div>
+      <Dialog.Root>
+        <div className="m-6 flex self-stretch items-center justify-center shrink-0">
           <Dialog.Trigger asChild>
-            <Button className="max-w-md mx-auto" size="lg" disabled={isLoading}>
+            <Button className="w-full max-w-md" size="lg" disabled={isLoading}>
               {isLoading ? 'Loading...' : 'Start Review'}
             </Button>
           </Dialog.Trigger>
-          <Dialog.Portal>
-            <Dialog.Content className="fixed inset-0 bg-zinc-100">
-              <ReviewSet />
-            </Dialog.Content>
-          </Dialog.Portal>
-        </Dialog.Root>
-      </div>
+        </div>
+        <Dialog.Portal>
+          <Dialog.Content className="fixed inset-0 bg-zinc-100">
+            <ReviewSet />
+          </Dialog.Content>
+        </Dialog.Portal>
+      </Dialog.Root>
     </div>
   );
 }

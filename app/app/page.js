@@ -30,25 +30,28 @@ export default function Home() {
 
   return (
     <div>
-      <div className="flex flex-col p-6">
-        <h2 className="text-xl font-bold tracking-tight text-balance text-center mb-3 mt-24">
+      <div className="flex flex-col">
+        <h2 className="text-xl font-bold tracking-tight text-balance text-center mb-3 mt-24 px-6">
           Welcome Back, {user?.name}
         </h2>
-        <h1 className="text-5xl font-bold tracking-tight text-balance text-center mb-12 mt-12">
+        <h1 className="text-5xl font-bold tracking-tight text-balance text-center mb-12 mt-12  px-6">
           Strengthen your memory in 10 min
         </h1>
-        <div className="flex  justify-center mb-24 w-full max-w-md mx-auto px-12">
-          {Array.from({ length: 10 }).map((_, index) => (
-            <PlayingCard
-              key={index}
-              className="shrink-0"
-              style={{
-                transform: `rotate(${(index + 1) * 2 - 10}deg) translateY(${
-                  Math.abs(index + 1 - 10) * 2
-                }px)`,
-              }}
-            />
-          ))}
+        <div className="w-full overflow-hidden py-12">
+          <div className="flex justify-center mb-12 w-full max-w-md mx-auto">
+            {Array.from({ length: 10 }).map((_, index) => (
+              <PlayingCard
+                key={index}
+                className="shrink-0 -ml-[20%]"
+                style={{
+                  transformOrigin: 'bottom center',
+                  transform: `rotate(${index - 4.5}deg) translateY(${Math.abs(
+                    index - 4.5
+                  )}px)`,
+                }}
+              />
+            ))}
+          </div>
         </div>
         <Dialog.Root>
           <Dialog.Trigger asChild>

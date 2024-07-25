@@ -1,23 +1,21 @@
 'use client';
 
 import FlashCard from '@/components/FlashCard';
+import PlayingCard from '@/components/PlayingCard';
+import Timer from '@/components/Timer';
 import { Button } from '@/components/ui/button';
 import { useCardSet, useUser } from '@/lib/hooks';
 import { cn } from '@/lib/utils';
 import * as Dialog from '@radix-ui/react-dialog';
-import { forwardRef, useEffect, useReducer, useRef, useState } from 'react';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
+import { useRef, useState } from 'react';
 import { HiSparkles as MagicIcon } from 'react-icons/hi2';
 import {
   MdCheck as CheckIcon,
   MdClose as CrossIcon,
   MdFlip as FlipIcon,
-  MdTimer as TimerIcon,
 } from 'react-icons/md';
-import Timer from '@/components/Timer';
-import PlayingCard from '@/components/PlayingCard';
-import { useSession } from 'next-auth/react';
-import { redirect } from 'next/navigation';
-import { useRouter } from 'next/navigation';
 
 export default function Home() {
   const router = useRouter();
@@ -28,11 +26,13 @@ export default function Home() {
     router.push('/login');
   }
 
+  if (!user) return null;
+
   return (
     <div>
       <div className="flex flex-col p-6">
         <h2 className="text-xl font-bold tracking-tight text-balance text-center mb-3 mt-24">
-          Welcome Back, {user.name}
+          Welcome Back, {user?.name}
         </h2>
         <h1 className="text-5xl font-bold tracking-tight text-balance text-center mb-12 mt-12">
           Strengthen your memory in 10 min

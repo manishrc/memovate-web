@@ -1,7 +1,9 @@
+'use client';
+import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Button } from '@/components/ui/button';
-import { signIn } from '@/auth';
+import { useFormStatus } from 'react-dom';
+import { loginAction } from './login-action';
 
 export default function LoginForm() {
   return (
@@ -9,25 +11,14 @@ export default function LoginForm() {
       <h1 className="text-xl font-semibold text-center py-8">
         Login to your {process.env.NEXT_PUBLIC_APP_NAME} account
       </h1>
-      <form
-        className="grid gap-3"
-        action={async (formData) => {
-          'use server';
-          const { username, password } = Object.fromEntries(formData);
-
-          return await signIn('credentials', {
-            username,
-            password,
-            redirectTo: process.env.NEXT_PUBLIC_AUTH_DEFAULT_LOGGED_IN_URL,
-          });
-        }}
-      >
+      <form className="grid gap-3" action={loginAction}>
         <div>
           <Label htmlFor="username">Username</Label>
           <Input
             className=""
             id="username"
             name="username"
+            autoComplete="username"
             placeholder="richard.feynman@caltech.edu"
             required
           />
@@ -39,14 +30,22 @@ export default function LoginForm() {
             id="password"
             name="password"
             type="password"
+            autoComplete="current-password"
             placeholder="Enter password"
             required
           />
         </div>
-        <Button className="w-full mt-3" type="submit">
-          Login
-        </Button>
+        <SubmitButton />
       </form>
     </div>
+  );
+}
+
+function SubmitButton() {
+  const { pending } = useFormStatus();
+  return (
+    <Button className="w-full mt-3" type="submit" disabled={pending}>
+      {pending ? 'Logging in...' : 'Login'}
+    </Button>
   );
 }

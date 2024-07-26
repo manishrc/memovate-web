@@ -9,7 +9,7 @@ import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 
 export default function Home() {
   const user = useUser();
-  const { isLoading } = useCurrentFlashcardSet();
+  const { isLoading, data } = useCurrentFlashcardSet();
 
   if (!user) return null;
 
@@ -27,8 +27,16 @@ export default function Home() {
       <Dialog.Root>
         <div className="m-6 flex self-stretch items-center justify-center shrink-0">
           <Dialog.Trigger asChild>
-            <Button className="w-full max-w-md" size="lg" disabled={isLoading}>
-              {isLoading ? 'Loading...' : 'Start Review'}
+            <Button
+              className="w-full max-w-md"
+              size="lg"
+              disabled={isLoading || !data}
+            >
+              {isLoading
+                ? 'Loading...'
+                : data
+                ? 'Start Review'
+                : 'No Cards to Review'}
             </Button>
           </Dialog.Trigger>
         </div>

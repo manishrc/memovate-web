@@ -1,6 +1,7 @@
 import { ThemeProvider } from 'next-themes';
 import { SessionProvider } from 'next-auth/react';
 import { auth } from '@/auth';
+import { Toaster } from '@/components/ui/sonner';
 
 export const metadata = {
   title: {
@@ -26,6 +27,7 @@ export default async function RootLayout({ children }) {
   return (
     <ThemeProvider themes="system">
       <SessionProvider session={session}>{children}</SessionProvider>
+      <Toaster />
     </ThemeProvider>
   );
 }

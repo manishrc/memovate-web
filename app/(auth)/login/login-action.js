@@ -1,7 +1,7 @@
 'use server';
 import { signIn } from '@/auth';
 
-export const loginAction = async (formData) => {
+export const loginAction = async (prevState, formData) => {
   const { username, password } = Object.fromEntries(formData);
 
   return await signIn('credentials', {

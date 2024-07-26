@@ -53,18 +53,22 @@ export default function ReviewSet() {
     const updatedCardSet = updateCardInSet(cardSet, currentCard.id);
     mutate(
       async (cardSet) => {
-        await fetchWithAuth('https://api.memovate.com/api/card_reviews', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            card_set_id: cardSet?.card_set_id,
-            card_id: currentCard.id,
-            result: result,
-            response_time: getTime(),
-          }),
-        });
+        try {
+          await fetchWithAuth('https://api.memovate.com/api/card_reviews', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              card_set_id: cardSet?.card_set_id,
+              card_id: currentCard.id,
+              result: result,
+              response_time: getTime(),
+            }),
+          });
+        } catch (error) {
+          console.error('updateResult:', error);
+        }
         return updatedCardSet;
       },
       {
@@ -74,7 +78,6 @@ export default function ReviewSet() {
       }
     );
     setCurrentCardFlipped(false);
-    console.log('Result', result);
   };
 
   const handleAction = (action) => {

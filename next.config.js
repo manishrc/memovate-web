@@ -5,6 +5,11 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
   enabled: process.env.ANALYZE === 'true',
 });
 
+// based on dev or production
+const NEXT_AUTH_COOKIE_NAME = process.env.AUTH_URL.includes('https')
+  ? '__Secure-authjs.session-token'
+  : 'authjs.session-token';
+
 module.exports = {
   // Enable for Cloudflare Workers
   // webpack: (config, { webpack }) => {
@@ -26,39 +31,39 @@ module.exports = {
 
   async redirects() {
     return [
-      // {
-      //   source: '/:login(login|signup|forgot-password|$)',
-      //   has: [
-      //     {
-      //       type: 'cookie',
-      //       key: 'authjs.session-token',
-      //     },
-      //   ],
-      //   permanent: false,
-      //   destination: process.env.NEXT_PUBLIC_AUTH_DEFAULT_LOGGED_IN_URL,
-      // },
-      // {
-      //   source: '/',
-      //   has: [
-      //     {
-      //       type: 'cookie',
-      //       key: 'authjs.session-token',
-      //     },
-      //   ],
-      //   permanent: false,
-      //   destination: process.env.NEXT_PUBLIC_AUTH_DEFAULT_LOGGED_IN_URL,
-      // },
-      // {
-      //   source: '/app',
-      //   missing: [
-      //     {
-      //       type: 'cookie',
-      //       key: 'authjs.session-token',
-      //     },
-      //   ],
-      //   permanent: false,
-      //   destination: '/login',
-      // },
+      {
+        source: '/:login(login|signup|forgot-password|$)',
+        has: [
+          {
+            type: 'cookie',
+            key: NEXT_AUTH_COOKIE_NAME,
+          },
+        ],
+        permanent: false,
+        destination: process.env.NEXT_PUBLIC_AUTH_DEFAULT_LOGGED_IN_URL,
+      },
+      {
+        source: '/',
+        has: [
+          {
+            type: 'cookie',
+            key: NEXT_AUTH_COOKIE_NAME,
+          },
+        ],
+        permanent: false,
+        destination: process.env.NEXT_PUBLIC_AUTH_DEFAULT_LOGGED_IN_URL,
+      },
+      {
+        source: '/app',
+        missing: [
+          {
+            type: 'cookie',
+            key: NEXT_AUTH_COOKIE_NAME,
+          },
+        ],
+        permanent: false,
+        destination: '/login',
+      },
     ];
   },
 };

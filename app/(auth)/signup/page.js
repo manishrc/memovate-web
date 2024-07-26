@@ -15,25 +15,20 @@ export default function LoginForm() {
           'use server';
 
           const { email, password, name } = Object.fromEntries(formData);
-          try {
-            const response = await fetch(`${process.env.BACKEND_URL}/users`, {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({
-                email,
-                password,
-                name,
-              }),
-              redirect: 'follow',
-            });
-            if (!response.ok) return null;
-
-            return response.json();
-          } catch (error) {
-            console.error('SignupForm server action:', error);
-          }
+          const response = await fetch(`${process.env.BACKEND_URL}/users`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              email,
+              password,
+              name,
+            }),
+            redirect: 'follow',
+          });
+          if (!response.ok) return null;
+          return response.json();
         }}
       >
         <div>

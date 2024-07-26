@@ -16,68 +16,65 @@ const authOptions = {
       },
       async authorize({ username, password }, request) {
         // Get Auth Token
-        try {
-          const authResponse = await fetch(
-            'https://api.memovate.com/oauth/token',
-            {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({
-                grant_type: 'password',
-                email: username,
-                password: password,
-              }),
-            }
+
+        const authResponse = await fetch(
+          'https://api.memovate.com/oauth/token',
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              grant_type: 'password',
+              email: username,
+              password: password,
+            }),
+          }
+        );
+
+        // TODO: Throw error if response is not ok
+        if (!authResponse.ok)
+          throw new CredentialsSignin(
+            await authResponse
+              .json()
+              .then(({ error_description }) => error_description)
           );
 
-          // TODO: Throw error if response is not ok
-          if (!authResponse.ok)
-            throw new CredentialsSignin(
-              await authResponse
-                .json()
-                .then(({ error_description }) => error_description)
-            );
+        const { accessToken, refreshToken, expiresIn, createdAt } =
+          await authResponse.json().then(transformResponse);
 
-          const { accessToken, refreshToken, expiresIn, createdAt } =
-            await authResponse.json().then(transformResponse);
+        // Get user info
+        const userResponse = await fetch(
+          'https://api.memovate.com/api/users/info',
+          {
+            method: 'GET',
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
+        );
 
-          // Get user info
-          const userResponse = await fetch(
-            'https://api.memovate.com/api/users/info',
-            {
-              method: 'GET',
-              headers: {
-                Authorization: `Bearer ${accessToken}`,
-              },
-            }
-          );
+        const {
+          id,
+          user: name,
+          email,
+          // `image` doesn't exist
+        } = await userResponse.json();
 
-          const {
+        const user =
+          {
             id,
-            user: name,
+            name,
             email,
-            // `image` doesn't exist
-          } = await userResponse.json();
+            // image: undefined, //  Add Image ,
+            accessToken,
+            refreshToken,
+            createdAt,
+            expiresIn, // Seconds
+            expiresAt: (createdAt + expiresIn) * 1000,
+          } ?? null;
 
-          const user =
-            {
-              id,
-              name,
-              email,
-              // image: undefined, //  Add Image ,
-              accessToken,
-              refreshToken,
-              createdAt,
-              expiresIn, // Seconds
-              expiresAt: (createdAt + expiresIn) * 1000,
-            } ?? null;
-
-          return user;
-        } catch (error) {
-          console.error('authorize:', error);
-        }
+        return user;
       },
     }),
   ],
@@ -139,22 +136,18 @@ const authOptions = {
 };
 
 async function rotateToken(refreshToken) {
-  try {
-    const response = await fetch('https://api.memovate.com/oauth/token', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        grant_type: 'refresh_token',
-        refresh_token: refreshToken,
-      }),
-    });
+  const response = await fetch('https://api.memovate.com/oauth/token', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      grant_type: 'refresh_token',
+      refresh_token: refreshToken,
+    }),
+  });
 
-    return response.json();
-  } catch (error) {
-    console.error('rotateToken:', error);
-  }
+  return response.json();
 }
 
 async function transformResponse(responseJson) {

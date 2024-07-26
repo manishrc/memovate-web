@@ -16,6 +16,7 @@ const authOptions = {
       },
       async authorize({ username, password }, request) {
         // Get Auth Token
+        console.log('authorize:', { username, password });
         const authResponse = await fetch(
           'https://api.memovate.com/oauth/token',
           {

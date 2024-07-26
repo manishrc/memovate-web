@@ -14,10 +14,11 @@ export default function LoginForm() {
         action={async (formData) => {
           'use server';
           const { username, password } = Object.fromEntries(formData);
+
           return await signIn('credentials', {
             username,
             password,
-            redirectTo: process.env.AUTH_DEFAULT_LOGGED_IN_URL,
+            redirectTo: process.env.NEXT_PUBLIC_AUTH_DEFAULT_LOGGED_IN_URL,
           });
         }}
       >

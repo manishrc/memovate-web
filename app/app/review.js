@@ -1,6 +1,6 @@
 'use client';
 
-import { useCardSet } from '@/lib/hooks';
+import { useCurrentFlashcardSet } from '@/lib/hooks';
 import { cn } from '@/lib/utils';
 import { useRef } from 'react';
 import { HiSparkles as MagicIcon } from 'react-icons/hi2';
@@ -13,7 +13,7 @@ import {
 } from 'react-icons/md';
 
 export default function ReviewPage() {
-  const { data, isLoading, isError } = useCardSet();
+  const { data, isLoading, isError } = useCurrentFlashcardSet();
   const timerRef = useRef(null);
 
   return (

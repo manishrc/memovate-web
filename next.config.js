@@ -39,17 +39,39 @@ module.exports = {
         has: [
           {
             type: 'cookie',
-            key: '__Secure-authjs.session-token',
+            key: 'authjs.session-token',
           },
         ],
         permanent: false,
-        destination: process.env.AUTH_DEFAULT_LOGGED_IN_URL,
+        destination: process.env.NEXT_PUBLIC_AUTH_DEFAULT_LOGGED_IN_URL,
+      },
+      {
+        source: '/',
+        has: [
+          {
+            type: 'cookie',
+            key: 'authjs.session-token',
+          },
+        ],
+        permanent: false,
+        destination: process.env.NEXT_PUBLIC_AUTH_DEFAULT_LOGGED_IN_URL,
+      },
+      {
+        source: '/app',
+        missing: [
+          {
+            type: 'cookie',
+            key: 'authjs.session-token',
+          },
+        ],
+        permanent: false,
+        destination: '/login',
       },
     ];
   },
 };
 
-module.exports = withPWA(module.exports);
+// module.exports = withPWA(module.exports);
 
 module.exports =
   process.env.NODE_ENV === 'development'

@@ -8,8 +8,8 @@ import * as Dialog from '@radix-ui/react-dialog';
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 
 export default function Home() {
-  const { isLoading } = useCurrentFlashcardSet();
   const user = useUser();
+  const { isLoading } = useCurrentFlashcardSet();
 
   if (!user) return null;
 

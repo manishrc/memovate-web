@@ -26,39 +26,39 @@ module.exports = {
 
   async redirects() {
     return [
-      {
-        source: '/:login(login|signup|forgot-password|$)',
-        has: [
-          {
-            type: 'cookie',
-            key: 'authjs.session-token',
-          },
-        ],
-        permanent: false,
-        destination: process.env.NEXT_PUBLIC_AUTH_DEFAULT_LOGGED_IN_URL,
-      },
-      {
-        source: '/',
-        has: [
-          {
-            type: 'cookie',
-            key: 'authjs.session-token',
-          },
-        ],
-        permanent: false,
-        destination: process.env.NEXT_PUBLIC_AUTH_DEFAULT_LOGGED_IN_URL,
-      },
-      {
-        source: '/app',
-        missing: [
-          {
-            type: 'cookie',
-            key: 'authjs.session-token',
-          },
-        ],
-        permanent: false,
-        destination: '/login',
-      },
+      // {
+      //   source: '/:login(login|signup|forgot-password|$)',
+      //   has: [
+      //     {
+      //       type: 'cookie',
+      //       key: 'authjs.session-token',
+      //     },
+      //   ],
+      //   permanent: false,
+      //   destination: process.env.NEXT_PUBLIC_AUTH_DEFAULT_LOGGED_IN_URL,
+      // },
+      // {
+      //   source: '/',
+      //   has: [
+      //     {
+      //       type: 'cookie',
+      //       key: 'authjs.session-token',
+      //     },
+      //   ],
+      //   permanent: false,
+      //   destination: process.env.NEXT_PUBLIC_AUTH_DEFAULT_LOGGED_IN_URL,
+      // },
+      // {
+      //   source: '/app',
+      //   missing: [
+      //     {
+      //       type: 'cookie',
+      //       key: 'authjs.session-token',
+      //     },
+      //   ],
+      //   permanent: false,
+      //   destination: '/login',
+      // },
     ];
   },
 };

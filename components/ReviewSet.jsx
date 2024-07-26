@@ -38,6 +38,8 @@ export default function ReviewSet() {
   const timerRef = useRef();
   const getTime = () => timerRef.current.getTime();
 
+  if (!cardSet) return null;
+
   const cards = cardSet?.cards || [];
   const pendingCards = cards.filter((card) => !card.has_review);
   const finishCount = 10 - pendingCards.length;

@@ -30,11 +30,12 @@ export default function Home() {
             <Button
               className="w-full max-w-md"
               size="lg"
-              disabled={isLoading || !data}
+              disabled={isLoading || !data?.length}
+              variant={!data?.length ? 'secondary' : 'primary'}
             >
               {isLoading
                 ? 'Loading...'
-                : data
+                : data?.length
                 ? 'Start Review'
                 : 'No Cards to Review'}
             </Button>

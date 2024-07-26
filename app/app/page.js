@@ -9,7 +9,9 @@ import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 
 export default function Home() {
   const user = useUser();
-  const { isLoading, data } = useCurrentFlashcardSet();
+  const { isLoading, data } = useCurrentFlashcardSet({
+    revalidateonFocus: true,
+  });
 
   if (!user) return null;
 
